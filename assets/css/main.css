@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-blue-50 via-white to-green-50 min-h-screen;
+  }
+}
+
+@layer components {
+  .chat-bubble {
+    @apply max-w-3xl mx-auto p-4 rounded-2xl shadow-sm;
+  }
+  
+  .chat-bubble.user {
+    @apply bg-blue-600 text-white ml-auto mr-4;
+  }
+  
+  .chat-bubble.assistant {
+    @apply bg-white border border-gray-200 ml-4 mr-auto;
+  }
+  
+  .chat-input {
+    @apply w-full p-4 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none;
+  }
+  
+  .crisis-banner {
+    @apply bg-red-50 border border-red-200 rounded-lg p-3 text-red-800 text-sm;
+  }
+  
+  .personality-card {
+    @apply p-4 border-2 border-gray-200 rounded-xl cursor-pointer transition-all hover:border-blue-300 hover:shadow-md;
+  }
+  
+  .personality-card.active {
+    @apply border-blue-500 bg-blue-50;
+  }
+} 
