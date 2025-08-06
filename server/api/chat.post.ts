@@ -1,7 +1,8 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-// Initialize Gemini API
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
+// Get runtime config for API key
+const config = useRuntimeConfig()
+const genAI = new GoogleGenerativeAI(config.geminiApiKey || '')
 
 // Safety rules and crisis detection
 const safetyRules = {
