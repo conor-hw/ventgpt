@@ -7,7 +7,10 @@ export default defineNuxtConfig({
   // Netlify deployment configuration
   ssr: true,
   nitro: {
-    preset: 'netlify'
+    preset: 'netlify',
+    experimental: {
+      wasm: true
+    }
   },
   
   // App configuration
