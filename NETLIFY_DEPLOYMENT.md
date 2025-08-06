@@ -22,7 +22,7 @@
 **Build settings in Netlify dashboard:**
 - **Build command**: `npm run build`
 - **Publish directory**: `.output/public`
-- **Node version**: `18` (or higher)
+- **Node version**: `20` (required for Nuxt 4)
 
 ### Step 3: Environment Variables
 
@@ -55,7 +55,7 @@ Add these environment variables in Netlify dashboard:
 **Problem**: Build fails during deployment.
 
 **Solutions**:
-- Check Node.js version (should be 18+)
+- Check Node.js version (should be 20+ for Nuxt 4)
 - Verify all dependencies are in `package.json`
 - Check for TypeScript errors
 
@@ -77,7 +77,7 @@ Add these environment variables in Netlify dashboard:
   publish = ".output/public"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
 
 [[redirects]]
   from = "/*"
