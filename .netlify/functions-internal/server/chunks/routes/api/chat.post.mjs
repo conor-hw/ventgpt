@@ -1,4 +1,4 @@
-import { d as defineEventHandler, r as readBody, c as createError, u as useRuntimeConfig } from '../../nitro/nitro.mjs';
+import { d as defineEventHandler, u as useRuntimeConfig, r as readBody, c as createError } from '../../nitro/nitro.mjs';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import 'node:http';
 import 'node:https';
@@ -8,8 +8,6 @@ import 'node:fs';
 import 'node:path';
 import 'node:crypto';
 
-const config = useRuntimeConfig();
-const genAI = new GoogleGenerativeAI(config.geminiApiKey || "");
 const safetyRules = {
   prohibited: [
     "self-harm",
@@ -171,6 +169,8 @@ function validateContent(message) {
 }
 const chat_post = defineEventHandler(async (event) => {
   try {
+    const config = useRuntimeConfig();
+    const genAI = new GoogleGenerativeAI(config.geminiApiKey || "");
     const body = await readBody(event);
     const { message, personality, conversationHistory = [] } = body;
     if (!message || !personality) {
@@ -209,7 +209,7 @@ ${conversationContext}
 
 User: ${message}
 
-Assistant:`;
+A:`;
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
