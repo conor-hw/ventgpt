@@ -8,6 +8,23 @@
       <!-- Header -->
       <ChatHeader />
       
+      <!-- Error Display -->
+      <div v-if="error" class="max-w-4xl mx-auto mb-4">
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
+          <div class="flex items-center space-x-2">
+            <ExclamationTriangleIcon class="h-5 w-5 text-red-600" />
+            <span class="font-medium">Error:</span>
+            <span>{{ error }}</span>
+          </div>
+          <button 
+            @click="clearError" 
+            class="mt-2 text-sm text-red-600 hover:text-red-800 underline"
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
+      
       <!-- Personality Selection (shown only when no conversation) -->
       <PersonalitySelector v-if="!hasConversation" @select="selectPersonality" />
       
@@ -27,6 +44,10 @@ import ChatHeader from '~/components/ChatHeader.vue'
 import PersonalitySelector from '~/components/PersonalitySelector.vue'
 import ChatMessages from '~/components/ChatMessages.vue'
 import ChatInput from '~/components/ChatInput.vue'
+import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
+
+// Use the chat composable
+const { sendMessage: sendChatMessage, isLoading, error, selectedPersonality, setPersonality, clearError } = useChat()
 
 // Sample data - will be replaced with real API integration
 const messages = ref([
@@ -39,11 +60,9 @@ const messages = ref([
 ])
 
 const hasConversation = computed(() => messages.value.length > 1)
-const isLoading = ref(false)
-const selectedPersonality = ref(null)
 
 const selectPersonality = (personality) => {
-  selectedPersonality.value = personality
+  setPersonality(personality.id)
   // Add personality introduction message
   messages.value.push({
     id: messages.value.length + 1,
@@ -57,25 +76,34 @@ const sendMessage = async (content) => {
   if (!content.trim()) return
   
   // Add user message
-  messages.value.push({
+  const userMessage = {
     id: messages.value.length + 1,
     role: 'user',
     content: content.trim(),
     timestamp: new Date()
-  })
+  }
+  messages.value.push(userMessage)
   
-  isLoading.value = true
+  // Prepare conversation history for API
+  const conversationHistory = messages.value.map(msg => ({
+    role: msg.role,
+    content: msg.content
+  }))
   
-  // Simulate AI response (replace with real Gemini API call)
-  setTimeout(() => {
+  // Call the API
+  const response = await sendChatMessage(content.trim(), conversationHistory)
+  
+  if (response) {
+    // Add AI response
     messages.value.push({
       id: messages.value.length + 1,
       role: 'assistant',
-      content: 'Thank you for sharing that with me. I hear you, and your feelings are valid. Would you like to talk more about what\'s on your mind?',
-      timestamp: new Date()
+      content: response.response,
+      timestamp: new Date(),
+      isCrisis: response.isCrisis,
+      safetyIssues: response.safetyIssues
     })
-    isLoading.value = false
-  }, 1500)
+  }
 }
 </script>
 

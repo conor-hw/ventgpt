@@ -20,8 +20,30 @@
               <div class="flex items-center space-x-2 mb-1">
                 <span class="text-sm font-medium text-gray-700">VentGPT</span>
                 <span class="text-xs text-gray-500">{{ formatTime(message.timestamp) }}</span>
+                <!-- Crisis indicator -->
+                <span v-if="message.isCrisis" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                  <ExclamationTriangleIcon class="h-3 w-3 mr-1" />
+                  Crisis Response
+                </span>
               </div>
-              <div class="text-gray-800 leading-relaxed">{{ message.content }}</div>
+              <div class="text-gray-800 leading-relaxed">
+                {{ message.content }}
+                <!-- Safety issues warning -->
+                <div v-if="message.safetyIssues && message.safetyIssues.length > 0" class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div class="flex items-start space-x-2">
+                    <ExclamationTriangleIcon class="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                    <div class="text-sm text-yellow-800">
+                      <p class="font-medium mb-1">Safety Notice:</p>
+                      <ul class="text-xs space-y-1">
+                        <li v-for="issue in message.safetyIssues" :key="issue" class="flex items-center space-x-1">
+                          <span class="w-1 h-1 bg-yellow-600 rounded-full"></span>
+                          <span>{{ issue }}</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           
@@ -62,7 +84,7 @@
 </template>
 
 <script setup>
-import { HeartIcon } from '@heroicons/vue/24/outline'
+import { HeartIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   messages: {
