@@ -1,11 +1,14 @@
 [build]
-  command = "npm run build"
+  command = "npm run build && ls -la .output/server && find .output/server -name '*chat*' -type f"
   functions = ".output/server"
   publish = ".output/public"
 
 [build.environment]
   NODE_VERSION = "20"
   SECRETS_SCAN_OMIT_PATHS = ".netlify/functions-internal/**,.output/server/**"
+
+[functions]
+  directory = ".output/server"
 
 [[redirects]]
   from = "/*"

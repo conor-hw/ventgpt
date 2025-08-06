@@ -13,8 +13,14 @@ export const useChat = () => {
     error.value = null
 
     try {
+      console.log('Making API call to:', '/api/chat')
+      console.log('Environment:', process.env.NODE_ENV)
+      
       const response = await $fetch('/api/chat', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: {
           message,
           personality: selectedPersonality.value,
@@ -22,16 +28,25 @@ export const useChat = () => {
         }
       })
 
+      console.log('API Response received:', response)
       return response
     } catch (err: any) {
-      console.error('Chat API Error:', err)
+      console.error('Chat API Error Details:', {
+        error: err,
+        status: err.status,
+        statusCode: err.statusCode,
+        statusMessage: err.statusMessage,
+        data: err.data
+      })
       
-      if (err.statusCode === 400) {
+      if (err.status === 404 || err.statusCode === 404) {
+        error.value = 'API endpoint not found. Please check deployment.'
+      } else if (err.statusCode === 400) {
         error.value = err.statusMessage || 'Invalid request'
       } else if (err.statusCode === 500) {
         error.value = 'Server error. Please try again.'
       } else {
-        error.value = 'Failed to send message. Please try again.'
+        error.value = `Failed to send message: ${err.statusMessage || err.message || 'Unknown error'}`
       }
       
       return null
