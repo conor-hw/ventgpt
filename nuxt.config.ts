@@ -5,7 +5,6 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss'],
   
   // Netlify deployment configuration
-  ssr: true,
   nitro: {
     preset: 'netlify',
     experimental: {
