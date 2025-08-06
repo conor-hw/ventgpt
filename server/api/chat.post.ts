@@ -1,9 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-// Get runtime config for API key
-const config = useRuntimeConfig()
-const genAI = new GoogleGenerativeAI(config.geminiApiKey || '')
-
 // Safety rules and crisis detection
 const safetyRules = {
   prohibited: [
@@ -158,6 +154,10 @@ function validateContent(message: string): { isValid: boolean; issues: string[] 
 
 export default defineEventHandler(async (event) => {
   try {
+    // Get runtime config for API key inside the handler
+    const config = useRuntimeConfig()
+    const genAI = new GoogleGenerativeAI(config.geminiApiKey || '')
+    
     const body = await readBody(event)
     const { message, personality, conversationHistory = [] } = body
     
@@ -213,7 +213,7 @@ ${conversationContext}
 
 User: ${message}
 
-Assistant:`
+A:`
     
     // Call Gemini API
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
